@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeftIcon, TrashIcon } from "@heroicons/react/24/outline";
+import BottomNav from "@/components/BottomNav";
 
 const Cart = () => {
 	const navigate = useNavigate();
@@ -56,6 +57,7 @@ const Cart = () => {
 					))}
 				</div>
 			)}
+			<BottomNav />
 		</div>
 	);
 };

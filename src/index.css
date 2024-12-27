@@ -71,6 +71,6 @@
     @apply border-border;
   }
   body {
-    @apply bg-gradient-to-br from-background via-background/95 to-background/90 text-foreground min-h-screen;
+    @apply bg-gradient-to-br from-background via-background/95 to-background/90 text-foreground min-h-screen font-sans;
   }
 }

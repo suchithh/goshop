@@ -19,7 +19,7 @@ const ScanBarcode = () => {
 	};
 
 	return (
-		<div className="min-h-screen bg-white dark:bg-gray-900 px-4">
+		<div className="min-h-screen bg-gradient-to-r from-primary to-primary/80 px-4">
 			<CollapsibleHeader title="Scan Product Barcode">
 				<Button
 					variant="ghost"

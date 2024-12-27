@@ -21,7 +21,7 @@ const Cart = () => {
 	};
 
 	return (
-		<div className="min-h-screen p-4 bg-background text-foreground transition-colors duration-200">
+		<div className="min-h-screen p-4 ">
 			<button
 				onClick={() => navigate("/")}
 				className="mb-4 flex items-center gap-2"

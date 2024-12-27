@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
+import { Search, ShoppingCart } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 
 const Home = () => {
@@ -17,9 +17,12 @@ const Home = () => {
 	return (
 		<div className="min-h-screen">
 			<div className="max-w-md mx-auto pt-12 px-4">
-				<h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-primary to-primary/80 text-transparent bg-clip-text">
-					GoShop
-				</h1>
+				<div className="flex flex-col items-center mb-4">
+					<ShoppingCart className="h-12 w-12 text-primary dark:text-primary/80 mb-2" />
+					<h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-primary to-primary/80 text-transparent bg-clip-text">
+						GoShop
+					</h1>
+				</div>
 
 				<div className="text-center mb-8 text-muted-foreground">
 					<p>Get started by searching for a product</p>

@@ -7,7 +7,7 @@ const Settings = () => {
 	const [maxResults, setMaxResults] = useState(10);
 
 	return (
-		<div className="min-h-screen px-4">
+		<div className="min-h-screen p-4">
 			<div className="max-w-md mx-auto pt-12">
 				<h1 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-primary to-primary/80 text-transparent bg-clip-text">
 					Settings

@@ -6,7 +6,9 @@ import {
 	useUser,
 	useClerk,
 } from "@clerk/clerk-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 // Add the custom SignOutButton component
 export const SignOutButton = () => {
@@ -27,6 +29,41 @@ export const SignOutButton = () => {
 const Account = () => {
 	const { user } = useUser();
 	const [isSignInOpen, setIsSignInOpen] = useState(false);
+
+	// Helper function to encode the email for Firestore
+	const encodeEmailForFirestore = (email) => email.replace(/@/g, "_at_");
+
+	useEffect(() => {
+		const pushUserToFirebase = async () => {
+			if (user) {
+				const emailKey = encodeEmailForFirestore(
+					user.emailAddresses[0].emailAddress
+				);
+
+				// Check if the user already exists in Firestore
+				const userDocRef = doc(db, "GoShop", "Users", emailKey, "Profile");
+				const userDoc = await getDoc(userDocRef);
+
+				if (!userDoc.exists()) {
+					// Create the user in Firestore if they don't exist
+					await setDoc(
+						userDocRef,
+						{
+							firstName: user.firstName || "",
+							lastName: user.lastName || "",
+							email: user.emailAddresses[0].emailAddress,
+							createdAt: new Date().toISOString(), // Optionally add timestamp
+						},
+						{ merge: true } // Merge to avoid overwriting existing data
+					);
+				}
+			}
+		};
+
+		if (user) {
+			pushUserToFirebase();
+		}
+	}, [user]);
 
 	return (
 		<div className="min-h-screen flex flex-col p-4 relative">

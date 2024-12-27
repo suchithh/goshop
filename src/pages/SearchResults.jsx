@@ -7,6 +7,7 @@ import ProductCard from "@/components/ProductCard";
 import FilterTabs from "@/components/FilterTabs";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { faker } from "@faker-js/faker";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const generateDummyProducts = (count) => {
 	return Array.from({ length: count }, () => ({
@@ -55,7 +56,8 @@ const SearchResults = () => {
 	const lastElementRef = useInfiniteScroll();
 
 	return (
-		<div className="min-h-screen pb-20">
+		<div className="min-h-screen pb-20 relative z-0">
+			<ThemeToggle className="z-30" />
 			<CollapsibleHeader
 				title={`Results for "${location.state?.query}"`}
 				className="mb-4"

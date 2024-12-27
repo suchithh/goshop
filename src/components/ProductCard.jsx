@@ -6,9 +6,12 @@ const ProductCard = forwardRef(({ item, onSave, isSaved }, ref) => {
 	return (
 		<div
 			ref={ref}
-			className="bg-white rounded-xl p-4 shadow-lg shadow-black/5 
-                 border border-border/50 
-                 transition-transform duration-200 hover:scale-[1.02]"
+			className={cn(
+				"rounded-xl p-4 shadow-lg transition-transform duration-200 hover:scale-[1.02]",
+				"bg-white dark:bg-gray-800",
+				"border border-border/50 dark:border-border-dark/50",
+				"shadow-black/5 dark:shadow-black/10"
+			)}
 		>
 			<div className="flex gap-4">
 				<img
@@ -18,8 +21,12 @@ const ProductCard = forwardRef(({ item, onSave, isSaved }, ref) => {
 					loading="lazy"
 				/>
 				<div className="flex-1">
-					<h3 className="font-semibold">{item.name}</h3>
-					<p className="text-muted-foreground">{item.store}</p>
+					<h3 className="font-semibold text-gray-900 dark:text-gray-100">
+						{item.name}
+					</h3>
+					<p className="text-muted-foreground dark:text-muted-foreground-dark">
+						{item.store}
+					</p>
 					<p className="text-lg font-bold text-primary">${item.price}</p>
 				</div>
 				<button onClick={() => onSave(item)} className="self-start p-2">
@@ -28,7 +35,7 @@ const ProductCard = forwardRef(({ item, onSave, isSaved }, ref) => {
 							"w-5 h-5 transition-colors",
 							isSaved
 								? "fill-primary stroke-primary"
-								: "stroke-muted-foreground"
+								: "stroke-muted-foreground dark:stroke-muted-foreground-dark"
 						)}
 					/>
 				</button>

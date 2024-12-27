@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.22.10",
+    "@clerk/clerk-react": "^5.21.0",
     "@faker-js/faker": "^9.3.0",
     "@heroicons/react": "^2.0.18",
     "@radix-ui/react-avatar": "^1.0.3",

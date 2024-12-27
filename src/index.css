@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+@layer base {
+  :root {
+    --background: 45 50% 98%;
+    --foreground: 45 10% 3.9%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 45 10% 3.9%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 45 10% 3.9%;
+    
+    --primary: 45 95% 50%;
+    --primary-foreground: 45 10% 3.9%;
+    
+    --secondary: 45 4.8% 95.9%;
+    --secondary-foreground: 45 5.9% 10%;
+    
+    --muted: 45 4.8% 95.9%;
+    --muted-foreground: 45 3.8% 46.1%;
+    
+    --accent: 45 4.8% 95.9%;
+    --accent-foreground: 45 5.9% 10%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 45 5.9% 90%;
+    --input: 45 5.9% 90%;
+    --ring: 45 95% 50%;
+    
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 45 25% 8%;
+    --foreground: 45 10% 98%;
+    
+    --card: 45 25% 12%;
+    --card-foreground: 45 10% 98%;
+    
+    --popover: 45 25% 12%;
+    --popover-foreground: 45 10% 98%;
+    
+    --primary: 45 95% 50%;
+    --primary-foreground: 45 10% 3.9%;
+    
+    --secondary: 45 25% 16%;
+    --secondary-foreground: 45 10% 98%;
+    
+    --muted: 45 25% 16%;
+    --muted-foreground: 45 5% 64.9%;
+    
+    --accent: 45 25% 16%;
+    --accent-foreground: 45 10% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 45 10% 98%;
+    
+    --border: 45 25% 16%;
+    --input: 45 25% 16%;
+    --ring: 45 95% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-gradient-to-br from-background via-background/95 to-background/90 text-foreground min-h-screen;
+  }
+}

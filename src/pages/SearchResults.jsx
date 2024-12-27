@@ -25,6 +25,14 @@ const SearchResults = () => {
 	const [loading, setLoading] = useState(false);
 	const [savedItems, setSavedItems] = useState([]);
 
+	// Load whatever's already in localStorage on mount
+	useEffect(() => {
+		const items = localStorage.getItem("savedItems");
+		if (items) {
+			setSavedItems(JSON.parse(items));
+		}
+	}, []);
+
 	// Dummy results
 	useEffect(() => {
 		const dummyResults = generateDummyProducts(10);
@@ -33,11 +41,14 @@ const SearchResults = () => {
 
 	const toggleSaveItem = (item) => {
 		setSavedItems((prev) => {
+			let updatedItems;
 			if (prev.some((saved) => saved.id === item.id)) {
-				return prev.filter((saved) => saved.id !== item.id);
+				updatedItems = prev.filter((saved) => saved.id !== item.id);
 			} else {
-				return [...prev, item];
+				updatedItems = [...prev, item];
 			}
+			localStorage.setItem("savedItems", JSON.stringify(updatedItems));
+			return updatedItems;
 		});
 	};
 

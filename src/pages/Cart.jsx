@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeftIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Trash } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 
 const Cart = () => {
@@ -33,18 +33,24 @@ const Cart = () => {
 						{savedItems.map((item) => (
 							<div
 								key={item.id}
-								className="flex items-center justify-between bg-white p-4 rounded-lg shadow"
+								className="flex items-center justify-between bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-600"
 							>
 								<div>
-									<h3 className="font-semibold">{item.name}</h3>
-									<p className="text-sm text-gray-500">{item.store}</p>
-									<p className="font-bold text-gray-700">${item.price}</p>
+									<h3 className="font-semibold text-gray-800 dark:text-gray-200">
+										{item.name}
+									</h3>
+									<p className="text-sm text-gray-500 dark:text-gray-300">
+										{item.store}
+									</p>
+									<p className="font-bold text-gray-700 dark:text-gray-200">
+										${item.price}
+									</p>
 								</div>
 								<button
 									onClick={() => removeItem(item.id)}
-									className="text-red-500 hover:text-red-700 flex items-center gap-1"
+									className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-600 flex items-center gap-1"
 								>
-									<TrashIcon className="w-5 h-5" />
+									<Trash className="w-5 h-5" />
 									Remove
 								</button>
 							</div>

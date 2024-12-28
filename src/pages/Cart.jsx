@@ -28,6 +28,8 @@ const Cart = () => {
 		const fetchCartItemsFromDoc = async () => {
 			setIsFetching(true);
 			if (!user) {
+				const localCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+				setCartItems(localCart);
 				setIsFetching(false);
 				return;
 			}
@@ -75,7 +77,12 @@ const Cart = () => {
 	}, [user]);
 
 	const removeItem = async (itemId) => {
-		if (!user) return;
+		if (!user) {
+			const updatedItems = cartItems.filter((item) => item.id !== itemId);
+			setCartItems(updatedItems);
+			localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+			return;
+		}
 
 		const email = user.emailAddresses[0].emailAddress;
 		const emailKey = encodeEmailForFirestore(email);

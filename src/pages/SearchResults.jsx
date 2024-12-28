@@ -57,7 +57,8 @@ const SearchResults = () => {
 
 	const fetchCartItems = async (currentUser) => {
 		if (!currentUser) {
-			console.log("No user is authenticated.");
+			const localCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+			setCartItems(localCart);
 			return;
 		}
 
@@ -113,7 +114,17 @@ const SearchResults = () => {
 
 	const toggleSaveItem = async (item) => {
 		if (!user) {
-			console.log("No user is authenticated.");
+			let updatedItems = [...cartItems];
+			const itemIndex = updatedItems.findIndex(
+				(cartItem) => cartItem.id === item.id
+			);
+			if (itemIndex > -1) {
+				updatedItems.splice(itemIndex, 1);
+			} else {
+				updatedItems.push(item);
+			}
+			setCartItems(updatedItems);
+			localStorage.setItem("cartItems", JSON.stringify(updatedItems));
 			return;
 		}
 

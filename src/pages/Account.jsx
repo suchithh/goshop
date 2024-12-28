@@ -8,7 +8,7 @@ import {
 } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, collection, updateDoc } from "firebase/firestore";
 
 // Add the custom SignOutButton component
 export const SignOutButton = () => {
@@ -19,7 +19,7 @@ export const SignOutButton = () => {
 		// and redirects them to the account page "/account".
 		<button
 			onClick={() => signOut({ redirectUrl: "/account" })}
-			className="mt-4 px-6 py-2 bg-secondary text-white rounded-md hover:bg-secondary-dark transition"
+			className="mt-4 px-6 py-2 bg-secondary rounded-md hover:bg-secondary-dark transition"
 		>
 			Sign out
 		</button>
@@ -31,38 +31,55 @@ const Account = () => {
 	const [isSignInOpen, setIsSignInOpen] = useState(false);
 
 	// Helper function to encode the email for Firestore
-	const encodeEmailForFirestore = (email) => email.replace(/@/g, "_at_");
+	const encodeEmailForFirestore = (email) =>
+		email.replace(/@/g, "_at_").replace(".com", "");
 
 	useEffect(() => {
 		const pushUserToFirebase = async () => {
 			if (user) {
-				const emailKey = encodeEmailForFirestore(
-					user.emailAddresses[0].emailAddress
-				);
+				const email = user.emailAddresses[0].emailAddress;
+				const emailKey = encodeEmailForFirestore(email);
+				const cartId = `${emailKey}_cart`;
 
-				// Check if the user already exists in Firestore
-				const userDocRef = doc(db, "GoShop", "Users", emailKey, "Profile");
-				const userDoc = await getDoc(userDocRef);
+				// Reference to the Users document
+				const usersDocRef = doc(db, "GoShop", "Users");
 
-				if (!userDoc.exists()) {
-					// Create the user in Firestore if they don't exist
-					await setDoc(
-						userDocRef,
-						{
-							firstName: user.firstName || "",
-							lastName: user.lastName || "",
-							email: user.emailAddresses[0].emailAddress,
-							createdAt: new Date().toISOString(), // Optionally add timestamp
+				// Get the Users document
+				const usersDoc = await getDoc(usersDocRef);
+
+				let usersData = usersDoc.exists() ? usersDoc.data() : {};
+
+				// Check if the user already exists in the map field
+				if (!usersData[emailKey]) {
+					// Update the Users document to include the user's profile
+					await updateDoc(usersDocRef, {
+						[emailKey]: {
+							profile: {
+								firstName: user.firstName || "",
+								lastName: user.lastName || "",
+								email: email,
+								createdAt: new Date().toISOString(),
+							},
+							cartId: cartId,
 						},
-						{ merge: true } // Merge to avoid overwriting existing data
-					);
+					});
+
+					// Create a new document in the Cart collection for the user's cart
+					const cartDocRef = doc(db, "GoShop", "Cart");
+					if (!usersData[cartId]) {
+						try {
+							await updateDoc(cartDocRef, {
+								[cartId]: { items: [], createdAt: new Date().toISOString() },
+							});
+						} catch (err) {
+							console.log(err);
+						}
+					}
 				}
 			}
 		};
 
-		if (user) {
-			pushUserToFirebase();
-		}
+		pushUserToFirebase();
 	}, [user]);
 
 	return (

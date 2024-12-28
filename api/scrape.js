@@ -1,14 +1,16 @@
 import axios from "axios";
-import cheerio from "cheerio";
+import { load } from "cheerio";
 
 export default async function handler(req, res) {
-	const { query } = req.query; // Query term passed from the frontend
+	const { query } = req.query;
+
+	// Validate the query parameter
 	if (!query) {
 		return res.status(400).json({ error: "Query parameter is required" });
 	}
 
 	try {
-		// Example scraping logic (replace with actual Google Shopping scraping)
+		// Make a request to Google Shopping
 		const response = await axios.get(
 			`https://www.google.com/search?tbm=shop&q=${encodeURIComponent(query)}`,
 			{
@@ -19,8 +21,9 @@ export default async function handler(req, res) {
 			}
 		);
 
+		// Parse the response using Cheerio
 		const html = response.data;
-		const $ = cheerio.load(html);
+		const $ = load(html);
 
 		const items = [];
 		$(".sh-dgr__grid-result").each((_, el) => {
@@ -32,9 +35,12 @@ export default async function handler(req, res) {
 			items.push({ name, price, link, image });
 		});
 
+		// Return the scraped data as a JSON response
 		return res.status(200).json({ items });
 	} catch (error) {
 		console.error("Error scraping Google Shopping:", error.message);
-		return res.status(500).json({ error: "Failed to scrape data." });
+		return res
+			.status(500)
+			.json({ error: "Failed to scrape data.", details: error.message });
 	}
 }

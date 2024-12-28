@@ -7,6 +7,7 @@ import ThemeToggle from "./components/ThemeToggle";
 import ScanBarcode from "./pages/ScanBarcode";
 import Settings from "./pages/Settings";
 import Account from "./pages/Account";
+import Test from "./pages/Test";
 
 function App() {
 	return (
@@ -19,6 +20,7 @@ function App() {
 				<Route path="/cart" element={<Cart />} />
 				<Route path="/settings" element={<Settings />} />
 				<Route path="/account" element={<Account />} />
+				<Route path="/test" element={<Test />} />
 			</Routes>
 		</Router>
 	);

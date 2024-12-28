@@ -19,13 +19,18 @@ const Cart = () => {
 	const navigate = useNavigate();
 	const [cartItems, setCartItems] = useState([]);
 	const { user } = useUser();
+	const [isFetching, setIsFetching] = useState(true);
 
 	const encodeEmailForFirestore = (email) =>
 		email.replace(/@/g, "_at_").replace(".com", "");
 
 	useEffect(() => {
 		const fetchCartItemsFromDoc = async () => {
-			if (!user) return;
+			setIsFetching(true);
+			if (!user) {
+				setIsFetching(false);
+				return;
+			}
 			const email = user.emailAddresses[0].emailAddress;
 			const emailKey = encodeEmailForFirestore(email);
 			const cartId = `${emailKey}_cart`;
@@ -57,9 +62,13 @@ const Cart = () => {
 					}
 				} else {
 					console.log("Users document does not exist.");
+					setIsFetching(false);
 				}
 			} catch (error) {
 				console.error("Error fetching cart items:", error);
+				setIsFetching(false);
+			} finally {
+				setIsFetching(false);
 			}
 		};
 		fetchCartItemsFromDoc();
@@ -112,7 +121,11 @@ const Cart = () => {
 				<h1 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-primary to-primary/80 text-transparent bg-clip-text">
 					My Cart
 				</h1>
-				{cartItems.length === 0 ? (
+				{isFetching ? (
+					<div className="flex justify-center items-center h-24">
+						<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+					</div>
+				) : cartItems.length === 0 ? (
 					<p className="text-center text-gray-500 mt-8">Your cart is empty</p>
 				) : (
 					<div className="grid gap-4">

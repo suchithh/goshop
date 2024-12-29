@@ -1,5 +1,6 @@
 import axios from "axios";
 import { load } from "cheerio";
+// import fs from "fs";
 
 export default async function handler(req, res) {
 	const { query } = req.query;
@@ -23,16 +24,20 @@ export default async function handler(req, res) {
 
 		// Parse the response using Cheerio
 		const html = response.data;
+		// // write the code into a file
+		// fs.writeFileSync("google-shopping.html", html);
 		const $ = load(html);
 
 		const items = [];
 		$(".sh-dgr__grid-result").each((_, el) => {
-			const name = $(el).find(".sh-np__product-title").text().trim();
-			const price = $(el).find(".T14wmb").text().trim();
+			const name = $(el).find(".tAxDx").text().trim();
+			const price = $(el).find(".a8Pemb").text().trim();
 			const link = $(el).find("a.shntl").attr("href");
-			const image = $(el).find("img.sh-dgr__image").attr("src");
+			const image = $(el).find(".ArOc1c img").attr("src");
+			const rating = $(el).find(".Rsc7Yb").text().trim(); // Rating score
+			const reviews = $(el).find(".QIrs8").text().trim(); // Reviews text
 
-			items.push({ name, price, link, image });
+			items.push({ name, price, link, image, rating, reviews });
 		});
 
 		// Return the scraped data as a JSON response

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { load } from "cheerio";
-// import fs from "fs";
+import fs from "fs";
 
 export default async function handler(req, res) {
 	const { query } = req.query;
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
 		// Parse the response using Cheerio
 		const html = response.data;
 		// // write the code into a file
-		// fs.writeFileSync("google-shopping.html", html);
+		fs.writeFileSync("google-shopping.html", html);
 		const $ = load(html);
 
 		const imageMap = {};
@@ -48,6 +48,7 @@ export default async function handler(req, res) {
 
 		const items = [];
 		$(".sh-dgr__content").each((_, el) => {
+			console.log("el", el);
 			const name = $(el).find(".tAxDx").text().trim();
 			const price = $(el).find(".a8Pemb").text().trim();
 

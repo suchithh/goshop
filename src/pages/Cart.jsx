@@ -14,6 +14,7 @@ import {
 import { onAuthStateChanged } from "firebase/auth";
 import BottomNav from "@/components/BottomNav";
 import { useUser } from "@clerk/clerk-react";
+import ProductCard from "@/components/ProductCard";
 
 const Cart = () => {
 	const navigate = useNavigate();
@@ -137,29 +138,12 @@ const Cart = () => {
 				) : (
 					<div className="grid gap-4">
 						{cartItems.map((item) => (
-							<div
+							<ProductCard
 								key={item.id}
-								className="flex items-center justify-between bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-600"
-							>
-								<div>
-									<h3 className="font-semibold text-gray-800 dark:text-gray-200">
-										{item.name}
-									</h3>
-									<p className="text-sm text-gray-500 dark:text-gray-400">
-										{item.store}
-									</p>
-									<p className="font-bold text-gray-700 dark:text-gray-300">
-										${item.price}
-									</p>
-								</div>
-								<button
-									onClick={() => removeItem(item.id)}
-									className="text-red-500 hover:text-red-700 flex items-center gap-1"
-								>
-									<Trash className="w-5 h-5" />
-									Remove
-								</button>
-							</div>
+								item={item}
+								onSave={() => removeItem(item.id)}
+								isCart={true}
+							/>
 						))}
 					</div>
 				)}

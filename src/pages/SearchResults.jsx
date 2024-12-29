@@ -196,6 +196,7 @@ const SearchResults = () => {
 							item={item}
 							onSave={toggleSaveItem}
 							isSaved={cartItems.some((cartItem) => cartItem.id === item.id)}
+							isCart={false}
 						/>
 					))}
 				</div>

@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { Heart, Star, StarHalf, ExternalLink } from "lucide-react";
+import { Heart, Star, StarHalf, ExternalLink, Trash } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const renderStars = (rating) => {
@@ -21,7 +21,7 @@ const renderStars = (rating) => {
 	return stars;
 };
 
-const ProductCard = forwardRef(({ item, onSave, isSaved }, ref) => {
+const ProductCard = forwardRef(({ item, onSave, isSaved, isCart }, ref) => {
 	return (
 		<div
 			ref={ref}
@@ -60,16 +60,22 @@ const ProductCard = forwardRef(({ item, onSave, isSaved }, ref) => {
 					)}
 				</div>
 				<div className="flex flex-col items-center">
-					<button onClick={() => onSave(item)} className="p-2">
-						<Heart
-							className={cn(
-								"w-5 h-5 transition-colors",
-								isSaved
-									? "fill-primary stroke-primary"
-									: "stroke-muted-foreground dark:stroke-muted-foreground-dark"
-							)}
-						/>
-					</button>
+					{isCart ? (
+						<button onClick={() => onSave(item)} className="p-2">
+							<Trash className="w-5 h-5 text-red-500 hover:text-red-700" />
+						</button>
+					) : (
+						<button onClick={() => onSave(item)} className="p-2">
+							<Heart
+								className={cn(
+									"w-5 h-5 transition-colors",
+									isSaved
+										? "fill-primary stroke-primary"
+										: "stroke-muted-foreground dark:stroke-muted-foreground-dark"
+								)}
+							/>
+						</button>
+					)}
 					<a
 						href={item.link}
 						target="_blank"

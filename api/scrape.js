@@ -1,64 +1,51 @@
-import axios from "axios";
-import { load } from "cheerio";
-import fs from "fs";
+import SerpApi from "google-search-results-nodejs";
 
 export default async function handler(req, res) {
-	const { query } = req.query;
-
-	// Validate the query parameter
-	if (!query) {
-		return res.status(400).json({ error: "Query parameter is required" });
-	}
-
 	try {
-		// Make a request to Google Shopping
-		const response = await axios.get(
-			`https://www.google.com/search?tbm=shop&q=${encodeURIComponent(query)}`,
-			{
-				headers: {
-					"User-Agent":
-						"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-				},
-			}
-		);
+		console.log("Request received with query:", req.query);
 
-		// Parse the response using Cheerio
-		const html = response.data;
-		// Set the response headers to trigger a file download
-		res.setHeader(
-			"Content-Disposition",
-			"attachment; filename=google-shopping.html"
-		);
-		res.setHeader("Content-Type", "text/html");
+		const { query } = req.query;
 
-		// Send the HTML content as the response
-		// res.send(html);
+		if (!query) {
+			console.error("Missing query parameter");
+			return res.status(400).json({ error: "Query parameter is required." });
+		}
 
-		const $ = load(html);
+		console.log("Initializing SerpApi...");
+		const serpApi = new SerpApi.GoogleSearch();
 
-		const items = [];
-		$(".MUWJ8c").each((_, el) => {
-			const name = $(el).find(".T4lftd").attr("aria-label") || "";
+		const params = {
+			api_key:
+				"934b6b3e219edbd03d85a537b4b38f929bb7f9daf7c97eab9f7f57cba54715bf",
+			q: query,
+			location: "United States",
+			tbm: "shop",
+		};
 
-			const price = $(el).find(".a8Pemb").text().trim();
+		console.log("Fetching results with params:", params);
 
-			const link = $(el).find("a.shntl").attr("href");
+		// Convert the callback into a promise
+		const fetchResults = () =>
+			new Promise((resolve, reject) => {
+				serpApi.json(params, (error, data) => {
+					if (error) {
+						console.error("Error fetching results from SerpApi:", error);
+						return reject(error);
+					}
+					resolve(data);
+				});
+			});
 
-			const rating = $(el).find(".Rsc7Yb").text().trim();
+		// Wait for the SerpApi results
+		const data = await fetchResults();
 
-			const reviews = $(el).find(".QIrs8").text().trim();
+		// Log the data received
+		console.log("Results received from SerpApi:", data);
 
-			const image = $(el).find("img.R1iPve").attr("src");
-
-			items.push({ name, price, link, image, rating, reviews });
-		});
-
-		// Return the scraped data as a JSON response
-		return res.status(200).json({ items });
+		// Return the data as JSON to the client
+		return res.status(200).json(data);
 	} catch (error) {
-		console.error("Error scraping Google Shopping:", error.message);
-		return res
-			.status(500)
-			.json({ error: "Failed to scrape data.", details: error.message });
+		console.error("Unhandled error:", error);
+		return res.status(500).json({ error: error.message });
 	}
 }

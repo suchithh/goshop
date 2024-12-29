@@ -27,6 +27,11 @@ const ProductCard = forwardRef(({ item, onSave, isSaved }, ref) => {
 					<p className="text-muted-foreground dark:text-muted-foreground-dark">
 						{item.store}
 					</p>
+					{item.prevPrice && (
+						<p className="text-sm text-gray-500 line-through">
+							${item.prevPrice}
+						</p>
+					)}
 					<p className="text-lg font-bold text-primary">${item.price}</p>
 				</div>
 				<button onClick={() => onSave(item)} className="self-start p-2">

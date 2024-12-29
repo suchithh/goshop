@@ -16,41 +16,15 @@ import {
 	arrayRemove,
 } from "firebase/firestore";
 import { useUser } from "@clerk/clerk-react"; // Import Clerk's useUser hook
-
-const generateDummyProducts = () => {
-	return [
-		{
-			id: "product-1",
-			name: "First Product",
-			price: 29.99,
-			image: "https://via.placeholder.com/150",
-			store: "Store A",
-		},
-		{
-			id: "product-2",
-			name: "Second Product",
-			price: 19.99,
-			image: "https://via.placeholder.com/150",
-			store: "Store B",
-		},
-		{
-			id: "product-3",
-			name: "Third Product",
-			price: 9.99,
-			image: "https://via.placeholder.com/150",
-			store: "Store C",
-		},
-	];
-};
+import { useScraper } from "@/hooks/useScraper";
 
 const SearchResults = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const [results, setResults] = useState([]);
-	const [loading, setLoading] = useState(false);
 	const [cartItems, setCartItems] = useState([]);
 	const { user } = useUser(); // Obtain user from Clerk
 	const lastElementRef = useInfiniteScroll();
+	const { results, loading, error, scrapeGoogleShopping } = useScraper();
 
 	const encodeEmailForFirestore = (email) =>
 		email.replace(/@/g, "_at_").replace(".com", "");
@@ -108,9 +82,21 @@ const SearchResults = () => {
 	}, [user]);
 
 	useEffect(() => {
-		const dummyResults = generateDummyProducts(10);
-		setResults(dummyResults);
-	}, []);
+		if (location.state?.query) {
+			console.log(`Initiating scrape for query: ${location.state.query}`);
+			scrapeGoogleShopping(location.state.query);
+		}
+	}, [location.state?.query]);
+
+	useEffect(() => {
+		console.log("SearchResults - Results updated:", results);
+	}, [results]);
+
+	useEffect(() => {
+		if (error) {
+			console.error("SearchResults - Error:", error);
+		}
+	}, [error]);
 
 	const toggleSaveItem = async (item) => {
 		if (!user) {
@@ -205,7 +191,7 @@ const SearchResults = () => {
 				<div className="grid gap-4">
 					{results.map((item, index) => (
 						<ProductCard
-							key={item.id}
+							key={index}
 							ref={index === results.length - 1 ? lastElementRef : null}
 							item={item}
 							onSave={toggleSaveItem}

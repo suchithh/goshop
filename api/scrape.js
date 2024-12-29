@@ -32,7 +32,7 @@ export default async function handler(req, res) {
 		res.setHeader("Content-Type", "text/html");
 
 		// Send the HTML content as the response
-		res.send(html);
+		// res.send(html);
 
 		const $ = load(html);
 

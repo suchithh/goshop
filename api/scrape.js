@@ -36,61 +36,19 @@ export default async function handler(req, res) {
 
 		const $ = load(html);
 
-		const imageMap = {};
-
-		// Loop through each script tag to find those with image URL and ID
-		$("script").each((_, script) => {
-			const scriptContent = $(script).html();
-
-			// Match the ID and URL using a regular expression
-			const match = /var\s+_u='([^']+)';\s*var\s+_i='([^']+)';/g.exec(
-				scriptContent
-			);
-
-			// If a match is found, store it in the imageMap
-			if (match) {
-				const [_, url, id] = match;
-				imageMap[id] = url.replace(/\\x3d/g, "=").replace(/\\x26/g, "&"); // Decode URL
-			}
-		});
-
 		const items = [];
-		$(".sh-dgr__content").each((_, el) => {
-			console.log("el", el);
-			const name = $(el).find(".tAxDx").text().trim();
+		$(".MUWJ8c").each((_, el) => {
+			const name = $(el).find(".T4lftd").attr("aria-label") || "";
+
 			const price = $(el).find(".a8Pemb").text().trim();
 
-			// Extract the link that is wrapped in Google redirect URL
-			let link = $(el).find("a.shntl").attr("href");
+			const link = $(el).find("a.shntl").attr("href");
 
-			// Check if the link contains the URL parameter (it's the real URL)
-			if (link && link.includes("/url?url=")) {
-				// Extract the real URL from the `url` parameter
-				const urlMatch = link.match(/url=([^&]+)/);
+			const rating = $(el).find(".Rsc7Yb").text().trim();
 
-				if (urlMatch) {
-					// Decode the URL and update the `link`
-					link = decodeURIComponent(urlMatch[1]);
-				}
-			}
+			const reviews = $(el).find(".QIrs8").text().trim();
 
-			// Map the image ID to the actual image URL from the script tags
-			const imgElement = $(el).find("img");
-			const imageId = imgElement.attr("id");
-			const image = imageMap[imageId] || imgElement.attr("src");
-
-			const rating = $(el).find(".Rsc7Yb").text().trim(); // Rating score if it exists
-
-			let reviews = $(el).find(".QIrs8").text().trim(); // Reviews text
-			if (reviews.includes("product reviews")) {
-				// Extract the number of reviews from the text (assuming it's before 'product reviews')
-				const reviewMatch = reviews.match(/(\d+)\s+product\s+reviews/);
-				if (reviewMatch) {
-					reviews = reviewMatch[1]; // Just the number of reviews
-				}
-			} else {
-				reviews = "0"; // If no reviews, set to 0
-			}
+			const image = $(el).find("img.R1iPve").attr("src");
 
 			items.push({ name, price, link, image, rating, reviews });
 		});

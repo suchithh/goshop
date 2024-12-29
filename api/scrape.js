@@ -24,8 +24,16 @@ export default async function handler(req, res) {
 
 		// Parse the response using Cheerio
 		const html = response.data;
-		// // write the code into a file
-		fs.writeFileSync("google-shopping.html", html);
+		// Set the response headers to trigger a file download
+		res.setHeader(
+			"Content-Disposition",
+			"attachment; filename=google-shopping.html"
+		);
+		res.setHeader("Content-Type", "text/html");
+
+		// Send the HTML content as the response
+		res.send(html);
+
 		const $ = load(html);
 
 		const imageMap = {};

@@ -20,8 +20,18 @@ export const useScraper = () => {
 			console.log(`Scraping Google Shopping for query: ${query}`);
 			console.log(`Environment: ${isLocalhost ? "Localhost" : "Production"}`);
 			console.log(`Fetch URL: ${url}`);
-			const response = await fetch(url);
-			console.log(`Fetch response status: ${response.status}`);
+
+			let response = await fetch(url);
+			if (isLocalhost && response.status === 404) {
+				console.log("scrape.json not found. Falling back to API call.");
+				response = await fetch(
+					`/api/scrape?query=${encodeURIComponent(query)}`
+				);
+				console.log(
+					`Fallback Fetch URL: /api/scrape?query=${encodeURIComponent(query)}`
+				);
+				console.log(`Fallback Fetch response status: ${response.status}`);
+			}
 
 			if (!response.ok)
 				throw new Error(`Failed to fetch data. Status: ${response.status}`);

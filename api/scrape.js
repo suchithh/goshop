@@ -27,7 +27,8 @@ export default async function handler(req, res) {
 			tbm: "shop",
 		};
 
-		console.log("Fetching results with params:", params);
+		// console.log("Fetching results with params:", params);
+		console.log("Fetching results with query:", query);
 
 		const requestUrl =
 			"https://serpapi.com/search.json?" +

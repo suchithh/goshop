@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BottomNav from "@/components/BottomNav";
 import { useTheme } from "@/hooks/useTheme";
 import { Sliders, ShoppingCart } from "lucide-react";
 
 const Settings = () => {
-	const [maxResults, setMaxResults] = useState(10);
+	const [maxResults, setMaxResults] = useState(() => {
+		return parseInt(localStorage.getItem("maxResults")) || 20;
+	});
+
+	useEffect(() => {
+		localStorage.setItem("maxResults", maxResults);
+	}, [maxResults]);
 
 	return (
 		<div className="min-h-screen p-4">
@@ -21,7 +27,7 @@ const Settings = () => {
 							min="1"
 							max="100"
 							value={maxResults}
-							onChange={(e) => setMaxResults(e.target.value)}
+							onChange={(e) => setMaxResults(parseInt(e.target.value))}
 							className="mt-2 px-4 py-2 border rounded-md ml-auto 
 									   bg-white dark:bg-gray-700 
 									   text-black dark:text-white 

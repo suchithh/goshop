@@ -24,6 +24,11 @@ const SearchResults = () => {
 	const [cartItems, setCartItems] = useState([]);
 	const { user } = useUser(); // Obtain user from Clerk
 	const lastElementRef = useInfiniteScroll();
+	const [maxResults, setMaxResults] = useState(() => {
+		return parseInt(localStorage.getItem("maxResults")) || 20;
+	});
+	const [filteredResults, setFilteredResults] = useState([]);
+	const [filter, setFilter] = useState("Relevant");
 	const { results, loading, error, scrapeGoogleShopping } = useScraper();
 
 	const encodeEmailForFirestore = (email) =>
@@ -89,8 +94,26 @@ const SearchResults = () => {
 	}, [location.state?.query]);
 
 	useEffect(() => {
-		console.log("SearchResults - Results updated:", results);
-	}, [results]);
+		const applyFilter = () => {
+			let sortedResults = [...results];
+			switch (filter) {
+				case "Price: Low to High":
+					sortedResults.sort((a, b) => a.price - b.price);
+					break;
+				case "Price: High to Low":
+					sortedResults.sort((a, b) => b.price - a.price);
+					break;
+				case "Rating":
+					sortedResults.sort((a, b) => b.rating - a.rating);
+					break;
+				default:
+					break;
+			}
+			setFilteredResults(sortedResults.slice(0, maxResults));
+		};
+
+		applyFilter();
+	}, [results, filter, maxResults]);
 
 	useEffect(() => {
 		if (error) {
@@ -184,15 +207,15 @@ const SearchResults = () => {
 			</CollapsibleHeader>
 
 			<div className="pt-32">
-				<FilterTabs />
+				<FilterTabs filter={filter} setFilter={setFilter} />
 			</div>
 
 			<div className="max-w-2xl mx-auto px-4 pt-4">
 				<div className="grid gap-4">
-					{results.map((item, index) => (
+					{filteredResults.map((item, index) => (
 						<ProductCard
 							key={index}
-							ref={index === results.length - 1 ? lastElementRef : null}
+							ref={index === filteredResults.length - 1 ? lastElementRef : null}
 							item={item}
 							onSave={toggleSaveItem}
 							isSaved={cartItems.some((cartItem) => cartItem.id === item.id)}

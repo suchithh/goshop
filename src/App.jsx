@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+	BrowserRouter as Router,
+	Routes,
+	Route,
+	Navigate,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import SearchResults from "./pages/SearchResults";
 import Cart from "./pages/Cart";
@@ -19,6 +24,8 @@ function App() {
 				<Route path="/cart" element={<Cart />} />
 				<Route path="/settings" element={<Settings />} />
 				<Route path="/account" element={<Account />} />
+				{/* Catch-all route */}
+				<Route path="*" element={<Navigate to="/account" />} />
 			</Routes>
 		</Router>
 	);

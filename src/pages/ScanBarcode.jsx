@@ -15,13 +15,33 @@ const ScanBarcode = () => {
 		onDecodeResult(result) {
 			setResult(result.getText());
 			console.log("Barcode Scanned:", result.getText());
-			navigate("/search", { state: { query: result.getText() } });
+			lookupProduct(result.getText());
 		},
 		onError(err) {
 			console.error("Scanning failed:", err);
 			setError("Unable to scan. Please try again.");
 		},
 	});
+
+	const lookupProduct = async (barcode) => {
+		try {
+			const apiKey = import.meta.env.VITE_BARCODE_LOOKUP_API_KEY;
+			const response = await fetch(
+				`https://api.barcodelookup.com/v2/products?barcode=${barcode}&formatted=y&key=${apiKey}`
+			);
+			const data = await response.json();
+			if (data.products && data.products.length > 0) {
+				const productName = data.products[0].product_name;
+				console.log("Product Name:", productName);
+				navigate("/search", { state: { query: productName } });
+			} else {
+				setError("Product not found. Please try again.");
+			}
+		} catch (err) {
+			console.error("Product lookup failed:", err);
+			setError("Unable to lookup product. Please try again.");
+		}
+	};
 
 	const handleBackClick = () => {
 		navigate("/");

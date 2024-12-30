@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 export const useScraper = () => {
 	const [results, setResults] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const isFetching = useRef(false);
 
 	const scrapeGoogleShopping = async (query) => {
+		if (isFetching.current) return; // Prevent duplicate calls
+		isFetching.current = true;
 		setLoading(true);
 		setError(null);
 
@@ -60,6 +63,7 @@ export const useScraper = () => {
 			console.error("Error in scrapeGoogleShopping:", err);
 			setError(err.message);
 		} finally {
+			isFetching.current = false;
 			setLoading(false);
 		}
 	};

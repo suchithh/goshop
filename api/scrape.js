@@ -1,4 +1,13 @@
-import SerpApi from "google-search-results-nodejs";
+import fetch from "node-fetch";
+//dotenv
+import dotenv from "dotenv";
+import fs from "fs";
+const envPath = "./.env.local";
+if (fs.existsSync(envPath)) {
+	dotenv.config({ path: envPath });
+} else {
+	console.warn(`Environment file ${envPath} not found.`);
+}
 
 export default async function handler(req, res) {
 	try {
@@ -11,12 +20,8 @@ export default async function handler(req, res) {
 			return res.status(400).json({ error: "Query parameter is required." });
 		}
 
-		console.log("Initializing SerpApi...");
-		const serpApi = new SerpApi.GoogleSearch();
-
 		const params = {
-			api_key:
-				"934b6b3e219edbd03d85a537b4b38f929bb7f9daf7c97eab9f7f57cba54715bf",
+			api_key: process.env.SERP_API_KEY,
 			q: query,
 			location: "United States",
 			tbm: "shop",
@@ -24,23 +29,17 @@ export default async function handler(req, res) {
 
 		console.log("Fetching results with params:", params);
 
-		// Convert the callback into a promise
-		const fetchResults = () =>
-			new Promise((resolve, reject) => {
-				serpApi.json(params, (error, data) => {
-					if (error) {
-						console.error("Error fetching results from SerpApi:", error);
-						return reject(error);
-					}
-					resolve(data);
-				});
-			});
-
-		// Wait for the SerpApi results
-		const data = await fetchResults();
+		const requestUrl =
+			"https://serpapi.com/search.json?" +
+			new URLSearchParams(params).toString();
+		const response = await fetch(requestUrl);
+		const data = await response.json();
 
 		// Log the data received
-		console.log("Results received from SerpApi:", data);
+		// console.log("Results received from SerpApi:", data);
+
+		// Set response header
+		res.setHeader("Content-Type", "application/json");
 
 		// Return the data as JSON to the client
 		return res.status(200).json(data);

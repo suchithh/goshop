@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
 	BrowserRouter as Router,
 	Routes,
 	Route,
 	Navigate,
+	useLocation,
 } from "react-router-dom";
 import Home from "./pages/Home";
 import SearchResults from "./pages/SearchResults";
@@ -14,6 +15,17 @@ import Settings from "./pages/Settings";
 import Account from "./pages/Account";
 
 function App() {
+	// Handle Clerk handshake parameter
+	const location = useLocation();
+
+	useEffect(() => {
+		const urlParams = new URLSearchParams(location.search);
+		if (urlParams.has("__clerk_handshake")) {
+			// Remove handshake query parameter and redirect to a valid route
+			window.history.replaceState({}, document.title, location.pathname);
+		}
+	}, [location]);
+
 	return (
 		<Router>
 			<ThemeToggle />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import BottomNav from "@/components/BottomNav";
-import { useTheme } from "@/hooks/useTheme";
-import { Sliders, ShoppingCart } from "lucide-react";
+// import { useTheme } from "@/hooks/useTheme";
+import { Sliders, ShoppingCart, Github, CodeXml } from "lucide-react";
 
 const Settings = () => {
 	const [maxResults, setMaxResults] = useState(() => {
@@ -39,6 +39,19 @@ const Settings = () => {
 						<ShoppingCart className="mr-2" />
 						<h2 className="text-xl font-semibold">App Version</h2>
 						<p className="mt-2 ml-auto">Version 1.0.0</p>
+					</div>
+					<div className="mb-4 flex items-center">
+						<CodeXml className="mr-2" />
+						<h2 className="text-xl font-semibold">Source Code</h2>
+						<a
+							href="https://github.com/suchithh/goshop"
+							target="_blank"
+							rel="noreferrer"
+							className="mt-2 ml-auto text-primary flex items-center"
+						>
+							<Github className="mr-1" />
+							GitHub
+						</a>
 					</div>
 				</div>
 			</div>
